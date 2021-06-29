@@ -4,11 +4,8 @@ public class CustomerTransactions {
 	private Integer customerId;
 	private String customerName;
 	private Double totalAmount;
-	
-	
 
 	public CustomerTransactions(Integer customerId, String customerName, Double totalAmount) {
-		super();
 		this.customerId = customerId;
 		this.customerName = customerName;
 		this.totalAmount = totalAmount;
@@ -37,7 +34,5 @@ public class CustomerTransactions {
 	public void setTotalAmount(Double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-
-	
 
 }

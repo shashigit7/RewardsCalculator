@@ -46,23 +46,57 @@ public class RewardsController {
 		List<Object[]> transactions = customerRepository.transactionsOfLastThreeMonths(Integer.parseInt(customerId));
 		int rewardPointsObtained = 0;
 		int dollarsSpent = 0;
-		for (Object[] transaction : transactions) {
-			CustomerTransactions custTrans = new CustomerTransactions((Integer) transaction[0], (String) transaction[1],
-					(Double) transaction[2]);
-			dollarsSpent = (int) Math.round(custTrans.getTotalAmount());
+		Object[] transaction = transactions.get(0);
+		CustomerTransactions custTrans = new CustomerTransactions((Integer) transaction[0], (String) transaction[1],
+				(Double) transaction[2]);
+		dollarsSpent = (int) Math.round(custTrans.getTotalAmount());
 
-			if (dollarsSpent >= 100) {
-				rewardPointsObtained = ((dollarsSpent - 100) * 2) + (1 * 50);
-
-			} else if (dollarsSpent > 50 && dollarsSpent < 100) {
-				rewardPointsObtained = (dollarsSpent - 50) * 1;
-			} else {
-				rewardPointsObtained = 0;
-			}
-		}
+		rewardPointsObtained = calculatePoints(dollarsSpent);
 
 		return "Total dollars spent by customer for the past 3 months: " + dollarsSpent
 				+ "\r\nPoints Earned by customer in last 3 months: " + rewardPointsObtained;
+	}
+
+	private int calculatePoints(int dollarsSpent) {
+		int rewardPointsObtained;
+		if (dollarsSpent >= 100) {
+			rewardPointsObtained = ((dollarsSpent - 100) * 2) + (1 * 50);
+
+		} else if (dollarsSpent > 50 && dollarsSpent < 100) {
+			rewardPointsObtained = (dollarsSpent - 50) * 1;
+		} else {
+			rewardPointsObtained = 0;
+		}
+		return rewardPointsObtained;
+	}
+
+	@GetMapping("/getMonthlyTransactions/{customerId}")
+	public String getMonthlyTranactions(@PathVariable String customerId) {
+		List<Object[]> transactions = customerRepository.monthlyTransactions(Integer.parseInt(customerId));
+		StringBuilder completeString = new StringBuilder();
+		StringBuilder monthlyTransactions = new StringBuilder();
+		completeString.append("Monthly Transactions of ");
+		String customerName="";
+		int totalDollarsSpent=0;
+		for (Object[] monthlyTransaction : transactions) {
+			customerName=(String)monthlyTransaction[0];
+			totalDollarsSpent = totalDollarsSpent+(int) Math.round((Double)monthlyTransaction[2]);
+			monthlyTransactions
+			.append(monthlyTransaction[1])
+			.append("th Month").append("        ")
+			.append(monthlyTransaction[2])
+			.append("\r\n");
+		}
+		return completeString.append(customerName)
+				.append("\r\n")
+				.append("Month        ")
+				.append("   Dollars Spent")
+				.append("\r\n")
+				.append(monthlyTransactions.toString())
+				.append("Total dollars spent: "+totalDollarsSpent)
+				.append("\r\n")
+				.append("Total points accumulated: "+calculatePoints(totalDollarsSpent))
+				.toString();
 	}
 
 }
