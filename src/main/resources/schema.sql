@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS CUSTOMER;  
+CREATE TABLE customer (
+  customer_id INT AUTO_INCREMENT  PRIMARY KEY,
+  customer_name VARCHAR(250) NOT NULL
+  
+);
+
+CREATE TABLE TRANSACTIONS (
+  transaction_id INT AUTO_INCREMENT  PRIMARY KEY,
+  customer_id INT NOT NULL,
+  transaction_date DATE NOT NULL,
+  transaction_amount DOUBLE(250) DEFAULT NULL
+);
